@@ -30,6 +30,17 @@ export default function createGenerateClassName(options = {}) {
   const { disableGlobal = false, productionPrefix = 'jss', seed = '' } = options;
   const seedPrefix = seed === '' ? '' : `${seed}-`;
   let ruleCounter = 0;
+  
+
+  const stringHash = function (str) {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+        var chr = str.charCodeAt(i);
+        hash = (hash << 5) - hash + chr;
+        hash |= 0;
+    }
+    return hash.toString(36);
+};
 
   const getNextCounterId = () => {
     ruleCounter += 1;
@@ -66,7 +77,7 @@ export default function createGenerateClassName(options = {}) {
     }
 
     if (process.env.NODE_ENV === 'production') {
-      return `${seedPrefix}${productionPrefix}${getNextCounterId()}`;
+      return `${seedPrefix}${productionPrefix}${stringHash(styleSheet.options.classNamePrefix+suffix)}`;
     }
 
     const suffix = `${rule.key}-${getNextCounterId()}`;
